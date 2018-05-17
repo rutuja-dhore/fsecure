@@ -1,0 +1,15 @@
+{
+  "name": "FSecure",
+  "version": "1.0.0",
+  "description": "",
+  "main": "GetContentLambda.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rutuja",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.238.1",
+    "moment":"^2.22.1"
+  }
+}

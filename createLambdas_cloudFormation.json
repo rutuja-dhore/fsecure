@@ -1,0 +1,94 @@
+{
+  "Resources": {
+    "FSecureExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [{
+            "Effect": "Allow",
+            "Principal": {
+              "Service": ["lambda.amazonaws.com"]
+            },
+            "Action": ["sts:AssumeRole"]
+          }]
+        },
+        "Path": "/"
+      }
+    },
+    "FSecureExecutionPolicy": {
+      "DependsOn": [
+        "FSecureExecutionRole"
+      ],
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+
+        "PolicyName": "MyLambdaToMakeLogsRolePolicy",
+        "Roles": [{
+          "Ref": "FSecureExecutionRole"
+        }],
+        "PolicyDocument": {
+          "Statement": [{
+            "Effect": "Allow",
+            "Action": ["logs:*"],
+            "Resource": ["arn:aws:logs:*:*:*"]
+          }, {
+            "Effect": "Allow",
+            "Action": [
+              "ec2:Describe*",
+              "ec2:CreateSnapshot",
+              "ec2:DeleteSnapshot",
+              "ec2:CreateTags",
+              "ec2:ModifySnapshotAttribute",
+              "ec2:ResetSnapshotAttribute",
+              "s3:*"
+
+            ],
+            "Resource": ["*"]
+          }]
+        }
+      }
+    },
+    "GetContentLambda": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": [
+        "FSecureExecutionRole",
+        "FSecureExecutionPolicy"
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "poland.fsecure.rutuja.dhore",
+          "S3Key": "GetContentLambda.zip"
+        },
+        "Role": {
+          "Fn::GetAtt": ["FSecureExecutionRole", "Arn"]
+        },
+        "Timeout": 300,
+        "Handler": "GetContentLambda.handler",
+        "Runtime": "nodejs6.10",
+        "FunctionName": "GetContentLambda",
+        "Description": "This Lambda gets content of .json stored on s3."
+      }
+    },
+    "EditContentLambda": {
+      "Type": "AWS::Lambda::Function",
+      "DependsOn": [
+        "FSecureExecutionRole",
+        "FSecureExecutionPolicy"
+      ],
+      "Properties": {
+        "Code": {
+          "S3Bucket": "poland.fsecure.rutuja.dhore",
+          "S3Key": "EditContentLambda.zip"
+        },
+        "Role": {
+          "Fn::GetAtt": ["FSecureExecutionRole", "Arn"]
+        },
+        "Timeout": 300,
+        "Handler": "EditContentLambda.handler",
+        "Runtime": "nodejs6.10",
+        "FunctionName": "EditContentLambda",
+        "Description": "This Lambda edits content of .json stored on s3 and updates the file contents on s3."
+      }
+    }
+  }
+}

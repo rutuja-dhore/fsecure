@@ -1,0 +1,11 @@
+{
+  "Resources": {
+    "MyS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "PublicReadWrite",
+        "BucketName": "poland.fsecure.rutuja.dhore"
+      }
+    }
+  }
+}
